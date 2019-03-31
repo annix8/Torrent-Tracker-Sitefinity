@@ -8,58 +8,34 @@
 
 @model SitefinityWebApp.Mvc.Models.CreateTorrentWidgetModel
 
-
-@*@using (Html.BeginForm("Index", "CreateTorrentWidget", FormMethod.Post, new
-        {
-            enctype = "multipart/form-data"
-        }))
-        {
-            @*<p>
-                Title @Html.TextBoxFor(x => x.Title)<br />
-                Description: @Html.TextBoxFor(m => m.Description) <br />
-                AdditionalInfo: @Html.TextBoxFor(m => m.AdditionalInfo) <br />
-                <label for="file">Upload Image:</label>
-                <input type="file" name="file" id="file" /><br><br>
-            </p>
-            <div>
-                <input type="submit" value="Submit form">
-            </div>
-    }*@
-
-
-@using (Html.BeginFormSitefinity("Index", "CreateTorrentWidget", FormMethod.Post, new { method= "post", enctype = "multipart/form-data" }))
+@using (Html.BeginFormSitefinity("Index", "CreateTorrentWidget", FormMethod.Post, new { method = "post", enctype = "multipart/form-data" }))
 {
-    @Html.ValidationSummary(true)
-
-<fieldset>
-    <legend>Torrent</legend>
-
-    <div class="editor-label">
+    <div class="form-group">
         @Html.LabelFor(model => model.Title)
-    </div>
-    <div class="editor-field">
-        @Html.EditorFor(model => model.Title)
-        @Html.ValidationMessageFor(model => model.Title)
+        @Html.TextBoxFor(model => model.Title, new { @class = "form-control" })
     </div>
 
-    <div class="editor-label">
-        @Html.Label("Upload your image")
-    </div>
-    <div class="editor-field">
-        @Html.TextBoxFor(model => model.UserImageData, new { Type = "File" })
+    <div class="form-group">
+        @Html.Label("Choose image")
+        @Html.TextBoxFor(model => model.UserImageData, new { Type = "File", @class = "form-control" })
         @Html.ValidationMessageFor(model => model.UserImageData)
     </div>
 
-    <div class="editor-label">
-        @Html.Label("Upload your torrent")
-    </div>
-    <div class="editor-field">
-        @Html.TextBoxFor(model => model.UserTorrentData, new { Type = "File" })
+    <div class="form-group">
+        @Html.Label("Choose torrent file")
+        @Html.TextBoxFor(model => model.UserTorrentData, new { Type = "File", @class = "form-control" })
         @Html.ValidationMessageFor(model => model.UserTorrentData)
     </div>
 
-    <p>
-        <input type="submit" value="Create" />
-    </p>
-</fieldset>
+    <div class="form-group">
+        @Html.LabelFor(model => model.Description)
+        @Html.TextAreaFor(model => model.Description, new { @class = "form-control" })
+    </div>
+
+    <div class="form-group">
+        @Html.LabelFor(model => model.AdditionalInfo)
+        @Html.TextBoxFor(model => model.AdditionalInfo, new { @class = "form-control" })
+    </div>
+
+    <button type="submit" class="btn btn-primary">Submit</button>
 }

@@ -5,6 +5,7 @@
 ------------------------------------------------------------------------------ */
 
 using SitefinityWebApp.Mvc.Models;
+using SitefinityWebApp.TorrentTrackerServices;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -33,6 +34,17 @@ namespace SitefinityWebApp.Mvc.Controllers
     [ControllerToolboxItem(Name = "CreateTorrentWidget_MVC", Title = "CreateTorrentWidget", SectionName = "CustomWidgets")]
     public class CreateTorrentWidgetController : Controller
     {
+        private readonly ImageService _imageService;
+        private readonly TorrentService _torrentService;
+        private readonly DocumentService _documentService;
+
+        public CreateTorrentWidgetController()
+        {
+            _imageService = new ImageService();
+            _torrentService = new TorrentService();
+            _documentService = new DocumentService();
+        }
+
         // GET: CreateTorrentWidget
         public ActionResult Index()
         {
@@ -46,12 +58,14 @@ namespace SitefinityWebApp.Mvc.Controllers
             string resultMessage = string.Empty;
             try
             {
-                var imageGuid = Guid.NewGuid();
-                var userImageData = model.UserImageData;
-                //CreateImageWithNativeAPI(imageGuid, $"{userImageData.FileName}{imageGuid}", userImageData.InputStream, userImageData.FileName, Path.GetExtension(userImageData.FileName));
+                string imageTitle = $"TorrentImage_{model.Title}";
+                string torrentTitle = $"TorrentFile_{model.Title}";
+                _imageService.CreateImageWithNativeAPI(new Guid(), imageTitle, model.UserImageData.InputStream, model.UserImageData.FileName, Path.GetExtension(model.UserImageData.FileName));
+                _documentService.CreateDocumentNativeAPI(new Guid(), torrentTitle, model.UserTorrentData.InputStream, model.UserTorrentData.FileName, Path.GetExtension(model.UserTorrentData.FileName));
+                _torrentService.CreateTorrentWithPublish(model);
                 string torrentName = model.UserTorrentData.FileName;
                 string imageName = model.UserImageData.FileName;
-                resultMessage = $"Torrent name: {torrentName}\n Title: {model.Title} Image name: {imageName}";
+                resultMessage = $"Torrent created. Torrent name: {torrentName}  Title: {model.Title}    Image name: {imageName}";
             }
             catch (Exception exc)
             {
