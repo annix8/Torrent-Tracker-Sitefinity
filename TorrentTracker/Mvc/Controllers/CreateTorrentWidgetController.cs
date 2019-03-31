@@ -48,7 +48,7 @@ namespace SitefinityWebApp.Mvc.Controllers
             {
                 var imageGuid = Guid.NewGuid();
                 var userImageData = model.UserImageData;
-                CreateImageWithNativeAPI(imageGuid, $"{userImageData.FileName}{imageGuid}", userImageData.InputStream, userImageData.FileName, Path.GetExtension(userImageData.FileName));
+                //CreateImageWithNativeAPI(imageGuid, $"{userImageData.FileName}{imageGuid}", userImageData.InputStream, userImageData.FileName, Path.GetExtension(userImageData.FileName));
                 string torrentName = model.UserTorrentData.FileName;
                 string imageName = model.UserImageData.FileName;
                 resultMessage = $"Torrent name: {torrentName}\n Title: {model.Title} Image name: {imageName}";
@@ -65,111 +65,6 @@ namespace SitefinityWebApp.Mvc.Controllers
 
             
             return Content(resultMessage);
-            string result = "Torrent successfully created";
-            try
-            {
-                // Set the provider name for the DynamicModuleManager here. All available providers are listed in
-                // Administration -> Settings -> Advanced -> DynamicModules -> Providers
-                var providerName = "OpenAccessProvider";
-
-                // Set a transaction name and get the version manager
-                var transactionName = "someTransactionName";
-                var versionManager = VersionManager.GetManager(null, transactionName);
-
-                DynamicModuleManager dynamicModuleManager = DynamicModuleManager.GetManager(providerName, transactionName);
-                Type torrentType = TypeResolutionService.ResolveType("Telerik.Sitefinity.DynamicTypes.Model.Torrents.Torrent");
-                DynamicContent torrentItem = dynamicModuleManager.CreateDataItem(torrentType);
-
-                // This is how values for the properties are set
-                torrentItem.SetValue("Title", model.Title);
-                torrentItem.SetValue("Link", "Some Link");
-                torrentItem.SetValue("Description", model.Description);
-                torrentItem.SetValue("AdditionalInfo", model.AdditionalInfo);
-                torrentItem.SetValue("Genre", "Some Genre");
-                torrentItem.SetValue("CreationDate", DateTime.Now);
-
-                LibrariesManager imageManager = LibrariesManager.GetManager();
-                var imageItem = imageManager.GetImages().FirstOrDefault(i => i.Status == Telerik.Sitefinity.GenericContent.Model.ContentLifecycleStatus.Master);
-                if (imageItem != null)
-                {
-                    // This is how we relate an item
-                    torrentItem.CreateRelation(imageItem, "Image");
-                }
-
-
-                torrentItem.SetString("UrlName", model.Title);
-                torrentItem.SetValue("Owner", ClaimsManager.GetCurrentIdentity().UserId);
-                torrentItem.SetValue("PublicationDate", DateTime.UtcNow);
-
-
-                torrentItem.SetWorkflowStatus(dynamicModuleManager.Provider.ApplicationName, "Draft");
-
-
-                // Create a version and commit the transaction in order changes to be persisted to data store
-                versionManager.CreateVersion(torrentItem, false);
-
-                // We can now call the following to publish the item
-                ILifecycleDataItem publishedTorrentItem = dynamicModuleManager.Lifecycle.Publish(torrentItem);
-
-                // You need to set appropriate workflow status
-                torrentItem.SetWorkflowStatus(dynamicModuleManager.Provider.ApplicationName, "Published");
-
-                // Create a version and commit the transaction in order changes to be persisted to data store
-                versionManager.CreateVersion(torrentItem, true);
-
-                // Now the item is published and can be seen in the page
-
-                // Commit the transaction in order for the items to be actually persisted to data store
-                TransactionManager.CommitTransaction(transactionName);
-            }
-            catch (Exception exc)
-            {
-                result = exc.Message;
-
-                if (exc.InnerException != null)
-                {
-                    result += $"{Environment.NewLine}{exc.InnerException.Message}";
-                }
-            }
-
-
-            return Content(result);
-        }
-
-        private void CreateImageWithNativeAPI(Guid masterImageId, string imageTitle, Stream imageStream, string imageFileName, string imageExtension)
-        {
-            LibrariesManager librariesManager = LibrariesManager.GetManager();
-            Telerik.Sitefinity.Libraries.Model.Image image = librariesManager.GetImages().Where(i => i.Id == masterImageId).FirstOrDefault();
-
-            if (image == null)
-            {
-                //The album post is created as master. The masterImageId is assigned to the master version.
-                image = librariesManager.CreateImage(masterImageId);
-
-                //Set the parent album.
-                Album album = librariesManager.GetAlbums().SingleOrDefault();
-                image.Parent = album;
-
-                //Set the properties of the album post.
-                image.Title = imageTitle;
-                image.DateCreated = DateTime.UtcNow;
-                image.PublicationDate = DateTime.UtcNow;
-                image.LastModified = DateTime.UtcNow;
-                image.UrlName = Regex.Replace(imageTitle.ToLower(), @"[^\w\-\!\$\'\(\)\=\@\d_]+", "-");
-                image.MediaFileUrlName = Regex.Replace(imageFileName.ToLower(), @"[^\w\-\!\$\'\(\)\=\@\d_]+", "-");
-
-                //Upload the image file.
-                // The imageExtension parameter must contain '.', for example '.jpeg'
-                librariesManager.Upload(image, imageStream, imageExtension);
-
-                //Save the changes.
-                librariesManager.SaveChanges();
-
-                //Publish the Albums item. The live version acquires new ID.
-                var bag = new Dictionary<string, string>();
-                bag.Add("ContentType", typeof(Image).FullName);
-                WorkflowManager.MessageWorkflow(masterImageId, typeof(Image), null, "Publish", false, bag);
-            }
         }
     }
 }
