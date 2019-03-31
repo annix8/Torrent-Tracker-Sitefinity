@@ -7,27 +7,10 @@
 using SitefinityWebApp.Mvc.Models;
 using SitefinityWebApp.TorrentTrackerServices;
 using System;
-using System.Collections.Generic;
 using System.IO;
-using System.Linq;
-using System.Security;
-using System.Text.RegularExpressions;
-using System.Web;
+using System.Text;
 using System.Web.Mvc;
-using Telerik.Sitefinity;
-using Telerik.Sitefinity.Data;
-using Telerik.Sitefinity.DynamicModules;
-using Telerik.Sitefinity.DynamicModules.Model;
-using Telerik.Sitefinity.Libraries.Model;
-using Telerik.Sitefinity.Lifecycle;
-using Telerik.Sitefinity.Model;
-using Telerik.Sitefinity.Modules.Libraries;
 using Telerik.Sitefinity.Mvc;
-using Telerik.Sitefinity.RelatedData;
-using Telerik.Sitefinity.Security.Claims;
-using Telerik.Sitefinity.Utilities.TypeConverters;
-using Telerik.Sitefinity.Versioning;
-using Telerik.Sitefinity.Workflow;
 
 namespace SitefinityWebApp.Mvc.Controllers
 {
@@ -44,8 +27,7 @@ namespace SitefinityWebApp.Mvc.Controllers
             _torrentService = new TorrentService();
             _documentService = new DocumentService();
         }
-
-        // GET: CreateTorrentWidget
+        
         public ActionResult Index()
         {
             var model = new CreateTorrentWidgetModel();
@@ -55,30 +37,31 @@ namespace SitefinityWebApp.Mvc.Controllers
         [HttpPost]
         public ActionResult Index(CreateTorrentWidgetModel model)
         {
-            string resultMessage = string.Empty;
+            StringBuilder sb = new StringBuilder();
             try
             {
-                string imageTitle = $"TorrentImage_{model.Title}";
-                string torrentTitle = $"TorrentFile_{model.Title}";
-                _imageService.CreateImageWithNativeAPI(new Guid(), imageTitle, model.UserImageData.InputStream, model.UserImageData.FileName, Path.GetExtension(model.UserImageData.FileName));
-                _documentService.CreateDocumentNativeAPI(new Guid(), torrentTitle, model.UserTorrentData.InputStream, model.UserTorrentData.FileName, Path.GetExtension(model.UserTorrentData.FileName));
+                Guid imageGuid = Guid.NewGuid();
+                Guid torrentDocumentGuid = Guid.NewGuid();
+                string imageTitle = $"{model.Title}-{imageGuid}";
+                string torrentTitle = $"{model.Title}-{torrentDocumentGuid}";
+                _imageService.CreateImageWithNativeAPI(imageGuid, imageTitle, model.UserImageData.InputStream, model.UserImageData.FileName, Path.GetExtension(model.UserImageData.FileName));
+                _documentService.CreateDocumentNativeAPI(torrentDocumentGuid, torrentTitle, model.UserTorrentData.InputStream, model.UserTorrentData.FileName, Path.GetExtension(model.UserTorrentData.FileName));
                 _torrentService.CreateTorrentWithPublish(model);
                 string torrentName = model.UserTorrentData.FileName;
                 string imageName = model.UserImageData.FileName;
-                resultMessage = $"Torrent created. Torrent name: {torrentName}  Title: {model.Title}    Image name: {imageName}";
+                sb.AppendLine($"Torrent created. Title: {model.Title}   Torrent name: {torrentName}");
             }
             catch (Exception exc)
             {
-                resultMessage = exc.Message;
+                sb.AppendLine(exc.Message);
 
                 if (exc.InnerException != null)
                 {
-                    resultMessage += $"{Environment.NewLine}{exc.InnerException.Message}";
+                    sb.AppendLine(exc.InnerException.Message);
                 }
             }
-
             
-            return Content(resultMessage);
+            return Content(sb.ToString());
         }
     }
 }
