@@ -9,14 +9,57 @@
 @model SitefinityWebApp.Mvc.Models.CreateTorrentWidgetModel
 
 
-@using (Html.BeginFormSitefinity())
+@*@using (Html.BeginForm("Index", "CreateTorrentWidget", FormMethod.Post, new
+        {
+            enctype = "multipart/form-data"
+        }))
+        {
+            @*<p>
+                Title @Html.TextBoxFor(x => x.Title)<br />
+                Description: @Html.TextBoxFor(m => m.Description) <br />
+                AdditionalInfo: @Html.TextBoxFor(m => m.AdditionalInfo) <br />
+                <label for="file">Upload Image:</label>
+                <input type="file" name="file" id="file" /><br><br>
+            </p>
+            <div>
+                <input type="submit" value="Submit form">
+            </div>
+    }*@
+
+
+@using (Html.BeginFormSitefinity("Index", "CreateTorrentWidget", FormMethod.Post, new { method= "post", enctype = "multipart/form-data" }))
 {
-<p>
-    Title @Html.TextBoxFor(x => x.Title)<br />
-    Description: @Html.TextBoxFor(m => m.Description) <br />
-    AdditionalInfo: @Html.TextBoxFor(m => m.AdditionalInfo) <br />
-</p>
-<div>
-    <input type="submit" value="Submit form">
-</div>
+    @Html.ValidationSummary(true)
+
+<fieldset>
+    <legend>Torrent</legend>
+
+    <div class="editor-label">
+        @Html.LabelFor(model => model.Title)
+    </div>
+    <div class="editor-field">
+        @Html.EditorFor(model => model.Title)
+        @Html.ValidationMessageFor(model => model.Title)
+    </div>
+
+    <div class="editor-label">
+        @Html.Label("Upload your image")
+    </div>
+    <div class="editor-field">
+        @Html.TextBoxFor(model => model.UserImageData, new { Type = "File" })
+        @Html.ValidationMessageFor(model => model.UserImageData)
+    </div>
+
+    <div class="editor-label">
+        @Html.Label("Upload your torrent")
+    </div>
+    <div class="editor-field">
+        @Html.TextBoxFor(model => model.UserTorrentData, new { Type = "File" })
+        @Html.ValidationMessageFor(model => model.UserTorrentData)
+    </div>
+
+    <p>
+        <input type="submit" value="Create" />
+    </p>
+</fieldset>
 }

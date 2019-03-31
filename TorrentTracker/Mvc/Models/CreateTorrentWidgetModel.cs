@@ -5,6 +5,8 @@
 ------------------------------------------------------------------------------ */
 
 using System;
+using System.Collections.Generic;
+using System.Web;
 using System.Web.Mvc;
 using Telerik.Sitefinity.Mvc;
 
@@ -13,10 +15,11 @@ namespace SitefinityWebApp.Mvc.Models
 	public class CreateTorrentWidgetModel
 	{
         public string Title { get; set; }
-        public string Link { get; set; }
         public string Description { get; set; }
         public string AdditionalInfo { get; set; }
         public string Genre { get; set; }
         public DateTime CreationDate { get; set; }
+        public HttpPostedFileBase UserImageData { get; set; }
+        public HttpPostedFileBase UserTorrentData { get; set; }
     }
 }

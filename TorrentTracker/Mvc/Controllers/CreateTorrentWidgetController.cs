@@ -6,13 +6,18 @@
 
 using SitefinityWebApp.Mvc.Models;
 using System;
+using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Security;
+using System.Text.RegularExpressions;
+using System.Web;
 using System.Web.Mvc;
 using Telerik.Sitefinity;
 using Telerik.Sitefinity.Data;
 using Telerik.Sitefinity.DynamicModules;
 using Telerik.Sitefinity.DynamicModules.Model;
+using Telerik.Sitefinity.Libraries.Model;
 using Telerik.Sitefinity.Lifecycle;
 using Telerik.Sitefinity.Model;
 using Telerik.Sitefinity.Modules.Libraries;
@@ -21,6 +26,7 @@ using Telerik.Sitefinity.RelatedData;
 using Telerik.Sitefinity.Security.Claims;
 using Telerik.Sitefinity.Utilities.TypeConverters;
 using Telerik.Sitefinity.Versioning;
+using Telerik.Sitefinity.Workflow;
 
 namespace SitefinityWebApp.Mvc.Controllers
 {
@@ -37,6 +43,28 @@ namespace SitefinityWebApp.Mvc.Controllers
         [HttpPost]
         public ActionResult Index(CreateTorrentWidgetModel model)
         {
+            string resultMessage = string.Empty;
+            try
+            {
+                var imageGuid = Guid.NewGuid();
+                var userImageData = model.UserImageData;
+                CreateImageWithNativeAPI(imageGuid, $"{userImageData.FileName}{imageGuid}", userImageData.InputStream, userImageData.FileName, Path.GetExtension(userImageData.FileName));
+                string torrentName = model.UserTorrentData.FileName;
+                string imageName = model.UserImageData.FileName;
+                resultMessage = $"Torrent name: {torrentName}\n Title: {model.Title} Image name: {imageName}";
+            }
+            catch (Exception exc)
+            {
+                resultMessage = exc.Message;
+
+                if (exc.InnerException != null)
+                {
+                    resultMessage += $"{Environment.NewLine}{exc.InnerException.Message}";
+                }
+            }
+
+            
+            return Content(resultMessage);
             string result = "Torrent successfully created";
             try
             {
@@ -94,25 +122,54 @@ namespace SitefinityWebApp.Mvc.Controllers
                 // Commit the transaction in order for the items to be actually persisted to data store
                 TransactionManager.CommitTransaction(transactionName);
             }
-            catch(Exception exc)
+            catch (Exception exc)
             {
                 result = exc.Message;
 
-                if(exc.InnerException != null)
+                if (exc.InnerException != null)
                 {
                     result += $"{Environment.NewLine}{exc.InnerException.Message}";
                 }
             }
-            
-            
+
+
             return Content(result);
         }
 
-        [HttpPost]
-        [Route("Test")]
-        public ActionResult Test(CreateTorrentWidgetModel model)
+        private void CreateImageWithNativeAPI(Guid masterImageId, string imageTitle, Stream imageStream, string imageFileName, string imageExtension)
         {
-            return Content(model.Title);
+            LibrariesManager librariesManager = LibrariesManager.GetManager();
+            Telerik.Sitefinity.Libraries.Model.Image image = librariesManager.GetImages().Where(i => i.Id == masterImageId).FirstOrDefault();
+
+            if (image == null)
+            {
+                //The album post is created as master. The masterImageId is assigned to the master version.
+                image = librariesManager.CreateImage(masterImageId);
+
+                //Set the parent album.
+                Album album = librariesManager.GetAlbums().SingleOrDefault();
+                image.Parent = album;
+
+                //Set the properties of the album post.
+                image.Title = imageTitle;
+                image.DateCreated = DateTime.UtcNow;
+                image.PublicationDate = DateTime.UtcNow;
+                image.LastModified = DateTime.UtcNow;
+                image.UrlName = Regex.Replace(imageTitle.ToLower(), @"[^\w\-\!\$\'\(\)\=\@\d_]+", "-");
+                image.MediaFileUrlName = Regex.Replace(imageFileName.ToLower(), @"[^\w\-\!\$\'\(\)\=\@\d_]+", "-");
+
+                //Upload the image file.
+                // The imageExtension parameter must contain '.', for example '.jpeg'
+                librariesManager.Upload(image, imageStream, imageExtension);
+
+                //Save the changes.
+                librariesManager.SaveChanges();
+
+                //Publish the Albums item. The live version acquires new ID.
+                var bag = new Dictionary<string, string>();
+                bag.Add("ContentType", typeof(Image).FullName);
+                WorkflowManager.MessageWorkflow(masterImageId, typeof(Image), null, "Publish", false, bag);
+            }
         }
     }
 }
