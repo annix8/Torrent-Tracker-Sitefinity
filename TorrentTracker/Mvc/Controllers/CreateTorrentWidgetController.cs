@@ -8,6 +8,7 @@ using SitefinityWebApp.Mvc.Models;
 using SitefinityWebApp.TorrentTrackerServices;
 using System;
 using System.IO;
+using System.Linq;
 using System.Text;
 using System.Web.Mvc;
 using Telerik.Sitefinity.Mvc;
@@ -17,17 +18,24 @@ namespace SitefinityWebApp.Mvc.Controllers
     [ControllerToolboxItem(Name = "CreateTorrentWidget_MVC", Title = "CreateTorrentWidget", SectionName = "CustomWidgets")]
     public class CreateTorrentWidgetController : Controller
     {
+        private const string InvalidFileFormatMessage = "Invalid file format {0}. Valid formats are {1}";
+        private readonly string[] _validImageFiles;
+        private readonly string[] _validDocumentFiles;
+
         private readonly ImageService _imageService;
         private readonly TorrentService _torrentService;
         private readonly DocumentService _documentService;
 
         public CreateTorrentWidgetController()
         {
+            _validImageFiles = new string[] { ".jpg", ".jpeg", ".png", ".gif", ".bmp", ".odg" };
+            _validDocumentFiles = new string[] { ".torrent" };
+
             _imageService = new ImageService();
             _torrentService = new TorrentService();
             _documentService = new DocumentService();
         }
-        
+
         public ActionResult Index()
         {
             var model = new CreateTorrentWidgetModel();
@@ -37,6 +45,11 @@ namespace SitefinityWebApp.Mvc.Controllers
         [HttpPost]
         public ActionResult Index(CreateTorrentWidgetModel model)
         {
+            if (!ValidateModel(model))
+            {
+                return View(model);
+            }
+
             StringBuilder sb = new StringBuilder();
             try
             {
@@ -60,8 +73,40 @@ namespace SitefinityWebApp.Mvc.Controllers
                     sb.AppendLine(exc.InnerException.Message);
                 }
             }
-            
+
             return Content(sb.ToString());
+        }
+
+        private bool ValidateModel(CreateTorrentWidgetModel model)
+        {
+            if (!ModelState.IsValid)
+            {
+                return false;
+            }
+
+            bool result = true;
+
+            string imageFileExtension = Path.GetExtension(model.UserImageData.FileName);
+            if (!_validImageFiles.Contains(imageFileExtension))
+            {
+                ModelState.AddModelError(
+                    nameof(CreateTorrentWidgetModel.UserImageData),
+                    string.Format(InvalidFileFormatMessage, imageFileExtension, string.Join("; ", _validImageFiles)));
+
+                result = false;
+            }
+
+            string documentFileExtension = Path.GetExtension(model.UserTorrentData.FileName);
+            if (!_validDocumentFiles.Contains(documentFileExtension))
+            {
+                ModelState.AddModelError(
+                    nameof(CreateTorrentWidgetModel.UserTorrentData),
+                    string.Format(InvalidFileFormatMessage, documentFileExtension, string.Join("; ", _validDocumentFiles)));
+
+                result = false;
+            }
+
+            return result;
         }
     }
 }

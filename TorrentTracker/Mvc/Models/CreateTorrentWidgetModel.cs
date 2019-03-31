@@ -4,22 +4,25 @@
 </auto-generated>
 ------------------------------------------------------------------------------ */
 
-using System;
-using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.Web;
-using System.Web.Mvc;
-using Telerik.Sitefinity.Mvc;
 
 namespace SitefinityWebApp.Mvc.Models
 {
-	public class CreateTorrentWidgetModel
+    public class CreateTorrentWidgetModel
 	{
+        [Required]
+        [MinLength(5)]
         public string Title { get; set; }
+        [Required]
         public string Description { get; set; }
         public string AdditionalInfo { get; set; }
         public string Genre { get; set; }
-        public DateTime CreationDate { get; set; }
+        [Required]
+        [Display(Name = "Torrent image")]
         public HttpPostedFileBase UserImageData { get; set; }
+        [Required]
+        [Display(Name = "Torrent file")]
         public HttpPostedFileBase UserTorrentData { get; set; }
     }
 }
