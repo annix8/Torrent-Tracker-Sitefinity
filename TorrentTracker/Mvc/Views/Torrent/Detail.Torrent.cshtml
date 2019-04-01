@@ -1,0 +1,79 @@
+﻿@model Telerik.Sitefinity.Frontend.Mvc.Models.ContentDetailsViewModel
+
+@using System.Collections;
+@using System.Linq;
+@using Telerik.Sitefinity.Frontend.DynamicContent.WidgetTemplates.Fields.Helpers;
+@using Telerik.Sitefinity;
+@using Telerik.Sitefinity.Data.ContentLinks;
+@using Telerik.Sitefinity.Frontend.Mvc.Helpers;
+@using Telerik.Sitefinity.Libraries.Model;
+@using Telerik.Sitefinity.Localization;
+@using Telerik.Sitefinity.Model;
+@using Telerik.Sitefinity.Model.ContentLinks;
+@using Telerik.Sitefinity.Modules.Pages;
+@using Telerik.Sitefinity.Pages.Model;
+
+<style>
+    .custom-div-wrapper {
+        margin: 10px;
+    }
+
+    img {
+        max-width: 50%;
+        max-height: 50%;
+    }
+</style>
+
+<div class="@Model.CssClass" @Html.InlineEditingAttributes(Model.ProviderName, Model.ContentType.FullName, (Guid)Model.Item.Fields.Id)>
+    <h2 @Html.InlineEditingFieldAttributes("Title", "ShortText")>
+        @Model.Item.Fields.Title
+    </h2>
+
+    @if (Model.Item.Fields.TorrentFile != null)
+    {
+        <div class="custom-div-wrapper">
+            <span><strong>Download link:</strong></span>
+            <a href='@Model.Item.Fields.TorrentFile.Fields.MediaUrl'>@Model.Item.Fields.Title</a>
+        </div>
+    }
+
+    @if (Model.Item.Fields.ImageFile != null)
+    {
+        <div class="custom-div-wrapper">
+            <img src='@Model.Item.Fields.ImageFile.Fields.MediaUrl' alt='@Model.Item.Fields.ImageFile.Fields.AlternativeText' title='@Model.Item.Fields.ImageFile.Fields.Title' /><br>
+        </div>
+    }
+
+    <div class="custom-div-wrapper">
+        <strong> Description :</strong> <div class="sf-Long-text" @Html.InlineEditingFieldAttributes("Description", "LongText")>@Html.HtmlSanitize((string)Model.Item.Fields.Description)</div>
+    </div>
+
+    <div class="custom-div-wrapper">
+        <strong> Additional info :</strong> <div @Html.InlineEditingFieldAttributes("AdditionalInfo", "LongText")>@Html.HtmlSanitize((string)Model.Item.Fields.AdditionalInfo)</div>
+    </div>
+
+    @if (Model.Item.Fields.Genres != null)
+    {
+        <div class="custom-div-wrapper">
+            <strong> Genres :</strong>
+            <ul @Html.InlineEditingFieldAttributes("Genres", "FlatTaxon")>
+                @foreach (var taxon in Model.Item.GetFlatTaxons("Genres"))
+                {
+                    <li>@taxon.Title.ToString()</li>
+                }
+            </ul>
+        </div>
+    }
+
+    @if (Model.Item.Fields.CreationDate != null)
+    {
+        <div class="custom-div-wrapper">
+            <strong> Creation date :</strong>
+            <span @Html.InlineEditingFieldAttributes("CreationDate", "DateTime")>
+                @Model.Item.GetDateTime("CreationDate", "MMM d, yyyy, HH:mm tt")
+            </span>
+        </div>
+    }
+
+    @Html.CommentsList(@Model.Item.DataItem)
+</div>
