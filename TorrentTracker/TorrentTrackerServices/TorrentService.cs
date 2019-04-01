@@ -1,5 +1,6 @@
 ﻿using SitefinityWebApp.TorrentTrackerServices.Dtos;
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using Telerik.Sitefinity;
 using Telerik.Sitefinity.Data;
@@ -8,11 +9,8 @@ using Telerik.Sitefinity.DynamicModules.Model;
 using Telerik.Sitefinity.Libraries.Model;
 using Telerik.Sitefinity.Lifecycle;
 using Telerik.Sitefinity.Model;
-using Telerik.Sitefinity.Modules.Libraries;
 using Telerik.Sitefinity.RelatedData;
 using Telerik.Sitefinity.Security.Claims;
-using Telerik.Sitefinity.Taxonomies;
-using Telerik.Sitefinity.Taxonomies.Model;
 using Telerik.Sitefinity.Utilities.TypeConverters;
 using Telerik.Sitefinity.Versioning;
 
@@ -22,11 +20,13 @@ namespace SitefinityWebApp.TorrentTrackerServices
     {
         private readonly ImageService _imageService;
         private readonly DocumentService _documentService;
+        private readonly TaxonomyService _taxonomyService;
 
         public TorrentService()
         {
             _imageService = new ImageService();
             _documentService = new DocumentService();
+            _taxonomyService = new TaxonomyService();
         }
 
         public void CreateTorrentWithPublish(CreateTorrentDto createTorrentDto)
@@ -48,11 +48,11 @@ namespace SitefinityWebApp.TorrentTrackerServices
             torrentItem.SetValue("Description", createTorrentDto.Description);
             torrentItem.SetValue("Title", createTorrentDto.Title);
             torrentItem.SetValue("CreationDate", DateTime.Now);
-            TaxonomyManager taxonomyManager = TaxonomyManager.GetManager();
-            var Genre = taxonomyManager.GetTaxa<FlatTaxon>().Where(t => t.Taxonomy.Name == "Genres").FirstOrDefault();
-            if (Genre != null)
+
+            List<Guid> taxonIds = _taxonomyService.GetTaxonIdsByTaxonomy(createTorrentDto.Genres, Constants.GenresTaxonomyName);
+            if (taxonIds.Any())
             {
-                torrentItem.Organizer.AddTaxa("Genres", Genre.Id);
+                torrentItem.Organizer.AddTaxa(Constants.GenresTaxonomyName, taxonIds.ToArray());
             }
 
             Image imageFileItem = _imageService.CreateImageWithNativeAPI(createTorrentDto.ImageDto);

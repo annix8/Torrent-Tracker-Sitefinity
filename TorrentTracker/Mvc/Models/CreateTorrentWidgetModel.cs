@@ -4,6 +4,7 @@
 </auto-generated>
 ------------------------------------------------------------------------------ */
 
+using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Web;
 
@@ -16,13 +17,14 @@ namespace SitefinityWebApp.Mvc.Models
         public string Title { get; set; }
         [Required]
         public string Description { get; set; }
+        [Display(Name = "Additional info")]
         public string AdditionalInfo { get; set; }
-        public string Genre { get; set; }
         [Required]
         [Display(Name = "Torrent image")]
         public HttpPostedFileBase UserImageData { get; set; }
         [Required]
         [Display(Name = "Torrent file")]
         public HttpPostedFileBase UserTorrentData { get; set; }
+        public List<string> Genres { get; set; } = new List<string>();
     }
 }
