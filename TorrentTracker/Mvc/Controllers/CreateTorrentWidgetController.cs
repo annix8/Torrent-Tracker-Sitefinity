@@ -6,6 +6,7 @@
 
 using SitefinityWebApp.Mvc.Models;
 using SitefinityWebApp.TorrentTrackerServices;
+using SitefinityWebApp.TorrentTrackerServices.Dtos;
 using System;
 using System.IO;
 using System.Linq;
@@ -15,25 +16,21 @@ using Telerik.Sitefinity.Mvc;
 
 namespace SitefinityWebApp.Mvc.Controllers
 {
-    [ControllerToolboxItem(Name = "CreateTorrentWidget_MVC", Title = "CreateTorrentWidget", SectionName = "CustomWidgets")]
+    [ControllerToolboxItem(Name = "CreateTorrentWidget_MVC", Title = "Create Torrent", SectionName = "Create torrents")]
     public class CreateTorrentWidgetController : Controller
     {
         private const string InvalidFileFormatMessage = "Invalid file format {0}. Valid formats are {1}";
         private readonly string[] _validImageFiles;
         private readonly string[] _validDocumentFiles;
 
-        private readonly ImageService _imageService;
         private readonly TorrentService _torrentService;
-        private readonly DocumentService _documentService;
 
         public CreateTorrentWidgetController()
         {
             _validImageFiles = new string[] { ".jpg", ".jpeg", ".png", ".gif", ".bmp", ".odg" };
             _validDocumentFiles = new string[] { ".torrent" };
 
-            _imageService = new ImageService();
             _torrentService = new TorrentService();
-            _documentService = new DocumentService();
         }
 
         public ActionResult Index()
@@ -53,13 +50,9 @@ namespace SitefinityWebApp.Mvc.Controllers
             StringBuilder sb = new StringBuilder();
             try
             {
-                Guid imageGuid = Guid.NewGuid();
-                Guid torrentDocumentGuid = Guid.NewGuid();
-                string imageTitle = $"{model.Title}-{imageGuid}";
-                string torrentTitle = $"{model.Title}-{torrentDocumentGuid}";
-                _imageService.CreateImageWithNativeAPI(imageGuid, imageTitle, model.UserImageData.InputStream, model.UserImageData.FileName, Path.GetExtension(model.UserImageData.FileName));
-                _documentService.CreateDocumentNativeAPI(torrentDocumentGuid, torrentTitle, model.UserTorrentData.InputStream, model.UserTorrentData.FileName, Path.GetExtension(model.UserTorrentData.FileName));
-                _torrentService.CreateTorrentWithPublish(model);
+                CreateTorrentDto torrent = GetTorrentData(model);
+                _torrentService.CreateTorrentWithPublish(torrent);
+
                 string torrentName = model.UserTorrentData.FileName;
                 string imageName = model.UserImageData.FileName;
                 sb.AppendLine($"Torrent created. Title: {model.Title}   Torrent name: {torrentName}");
@@ -107,6 +100,54 @@ namespace SitefinityWebApp.Mvc.Controllers
             }
 
             return result;
+        }
+
+        private CreateTorrentDto GetTorrentData(CreateTorrentWidgetModel model)
+        {
+            CreateImageDto image = CreateImage(model);
+            CreateDocumentDto document = CreateDocument(model);
+
+            return new CreateTorrentDto
+            {
+                Id = Guid.NewGuid(),
+                Title = model.Title,
+                Description = model.Description,
+                AdditionalInfo = model.AdditionalInfo,
+                ImageDto = image,
+                DocumentDto = document
+            };
+        }
+
+        private CreateImageDto CreateImage(CreateTorrentWidgetModel model)
+        {
+            Guid imageGuid = Guid.NewGuid();
+            string imageTitle = $"{model.Title}-{imageGuid}";
+            var imageDto = new CreateImageDto()
+            {
+                MasterId = imageGuid,
+                Title = imageTitle,
+                Stream = model.UserImageData.InputStream,
+                FileName = model.UserImageData.FileName,
+                FileExtension = Path.GetExtension(model.UserImageData.FileName)
+            };
+
+            return imageDto;
+        }
+
+        private CreateDocumentDto CreateDocument(CreateTorrentWidgetModel model)
+        {
+            Guid documentGuid = Guid.NewGuid();
+            string documentTitle = $"{model.Title}-{documentGuid}";
+            var documentDto = new CreateDocumentDto()
+            {
+                MasterId = documentGuid,
+                Title = documentTitle,
+                Stream = model.UserTorrentData.InputStream,
+                FileName = model.UserTorrentData.FileName,
+                FileExtension = Path.GetExtension(model.UserTorrentData.FileName)
+            };
+
+            return documentDto;
         }
     }
 }
