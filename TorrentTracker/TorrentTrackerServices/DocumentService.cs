@@ -11,26 +11,27 @@ namespace SitefinityWebApp.TorrentTrackerServices
 {
     public class DocumentService
     {
-        public Document CreateDocumentNativeAPI(CreateDocumentDto createDocumentDto)
+        public Document CreateDocumentNativeAPI(CreateDocumentDto createDocumentDto, Guid torrentId)
         {
             LibrariesManager librariesManager = LibrariesManager.GetManager();
-            Document document = librariesManager.GetDocuments().Where(d => d.Id == createDocumentDto.MasterId).FirstOrDefault();
+            Document document = librariesManager.GetDocuments().Where(d => d.Id == createDocumentDto.Id).FirstOrDefault();
 
             if (document == null)
             {
                 //The document is created as master. The masterDocumentId is assigned to the master version.
-                document = librariesManager.CreateDocument(createDocumentDto.MasterId);
+                document = librariesManager.CreateDocument(createDocumentDto.Id);
 
                 //Set the parent document library.
                 DocumentLibrary documentLibrary = librariesManager.GetDocumentLibraries().SingleOrDefault();
                 document.Parent = documentLibrary;
 
                 //Set the properties of the document.
-                document.Title = createDocumentDto.Title;
+                string title = $"{createDocumentDto.Title}-{torrentId}";
+                document.Title = title;
                 document.DateCreated = DateTime.UtcNow;
                 document.PublicationDate = DateTime.UtcNow;
                 document.LastModified = DateTime.UtcNow;
-                document.UrlName = Regex.Replace(createDocumentDto.Title.ToLower(), @"[^\w\-\!\$\'\(\)\=\@\d_]+", "-");
+                document.UrlName = Regex.Replace(title.ToLower(), @"[^\w\-\!\$\'\(\)\=\@\d_]+", "-");
                 document.MediaFileUrlName = Regex.Replace(createDocumentDto.FileName.ToLower(), @"[^\w\-\!\$\'\(\)\=\@\d_]+", "-");
 
                 //Upload the document file.
@@ -45,7 +46,7 @@ namespace SitefinityWebApp.TorrentTrackerServices
                 //Publish the DocumentLibraries item. The live version acquires new ID.
                 var bag = new Dictionary<string, string>();
                 bag.Add("ContentType", typeof(Document).FullName);
-                WorkflowManager.MessageWorkflow(createDocumentDto.MasterId, typeof(Document), null, "Publish", false, bag);
+                WorkflowManager.MessageWorkflow(createDocumentDto.Id, typeof(Document), null, "Publish", false, bag);
             }
 
             return document;

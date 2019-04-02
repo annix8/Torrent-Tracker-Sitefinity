@@ -55,21 +55,21 @@ namespace SitefinityWebApp.TorrentTrackerServices
                 torrentItem.Organizer.AddTaxa(Constants.GenresTaxonomyName, taxonIds.ToArray());
             }
 
-            Image imageFileItem = _imageService.CreateImageWithNativeAPI(createTorrentDto.ImageDto);
+            Image imageFileItem = _imageService.CreateImageWithNativeAPI(createTorrentDto.ImageDto, torrentItem.Id);
             if (imageFileItem != null)
             {
                 // This is how we relate an item
                 torrentItem.CreateRelation(imageFileItem, "ImageFile");
             }
 
-            Document torrentFileItem = _documentService.CreateDocumentNativeAPI(createTorrentDto.DocumentDto);
+            Document torrentFileItem = _documentService.CreateDocumentNativeAPI(createTorrentDto.DocumentDto, torrentItem.Id);
             if (torrentFileItem != null)
             {
                 // This is how we relate an item
                 torrentItem.CreateRelation(torrentFileItem, "TorrentFile");
             }
 
-            torrentItem.SetString("UrlName", $"{createTorrentDto.Title}{createTorrentDto.Id}");
+            torrentItem.SetString("UrlName", $"{createTorrentDto.Title}{torrentItem.Id}");
             torrentItem.SetValue("Owner", ClaimsManager.GetCurrentIdentity().UserId);
             torrentItem.SetValue("PublicationDate", DateTime.UtcNow);
 

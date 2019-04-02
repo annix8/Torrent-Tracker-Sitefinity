@@ -19,28 +19,18 @@ namespace SitefinityWebApp.Mvc.Controllers
     [ControllerToolboxItem(Name = "CreateTorrentWidget_MVC", Title = "Create Torrent", SectionName = "Create torrents")]
     public class CreateTorrentWidgetController : Controller
     {
-        private readonly string[] _validImageFiles;
-        private readonly string[] _validDocumentFiles;
-
         private readonly TorrentService _torrentService;
         private readonly TaxonomyService _taxonomyService;
 
         public CreateTorrentWidgetController()
         {
-            _validImageFiles = new string[] { ".jpg", ".jpeg", ".png", ".gif", ".bmp", ".odg" };
-            _validDocumentFiles = new string[] { ".torrent" };
-
             _torrentService = new TorrentService();
             _taxonomyService = new TaxonomyService();
         }
 
         public ActionResult Index()
         {
-            var genres = _taxonomyService.GetTaxonNamesByTaxonomy(Constants.GenresTaxonomyName);
-            var model = new CreateTorrentWidgetModel()
-            {
-                Genres = genres
-            };
+            CreateTorrentWidgetModel model = CreateInitialTorrentWidgetModel();
             return View(model);
         }
 
@@ -49,6 +39,9 @@ namespace SitefinityWebApp.Mvc.Controllers
         {
             if (!ValidateModel(model))
             {
+                // quickfix to populate genres when invalid data is passed on Add torrent
+                var genres = _taxonomyService.GetTaxonNamesByTaxonomy(Constants.GenresTaxonomyName);
+                model.Genres = genres;
                 return View(model);
             }
 
@@ -58,9 +51,8 @@ namespace SitefinityWebApp.Mvc.Controllers
                 CreateTorrentDto torrent = GetTorrentData(model);
                 _torrentService.CreateTorrentWithPublish(torrent);
 
-                string torrentName = model.UserTorrentData.FileName;
-                string imageName = model.UserImageData.FileName;
-                sb.AppendLine($"Torrent created. Title: {model.Title}   Torrent name: {torrentName}");
+                sb.AppendLine(string.Format(Constants.CreateTorrentSuccessMessage, model.Title));
+                ViewBag.SuccessMessage = sb.ToString();
             }
             catch (Exception exc)
             {
@@ -70,9 +62,20 @@ namespace SitefinityWebApp.Mvc.Controllers
                 {
                     sb.AppendLine(exc.InnerException.Message);
                 }
+
+                ViewBag.ErrorMessage = sb.ToString();
             }
 
-            return Content(sb.ToString());
+            return View(CreateInitialTorrentWidgetModel());
+        }
+
+        private CreateTorrentWidgetModel CreateInitialTorrentWidgetModel()
+        {
+            var genres = _taxonomyService.GetTaxonNamesByTaxonomy(Constants.GenresTaxonomyName);
+            return new CreateTorrentWidgetModel()
+            {
+                Genres = genres
+            };
         }
 
         private bool ValidateModel(CreateTorrentWidgetModel model)
@@ -85,21 +88,21 @@ namespace SitefinityWebApp.Mvc.Controllers
             bool result = true;
 
             string imageFileExtension = Path.GetExtension(model.UserImageData.FileName).ToLower();
-            if (!_validImageFiles.Contains(imageFileExtension))
+            if (!Constants.ValidImageFiles.Contains(imageFileExtension))
             {
                 ModelState.AddModelError(
                     nameof(CreateTorrentWidgetModel.UserImageData),
-                    string.Format(Constants.InvalidFileFormatMessage, imageFileExtension, string.Join("; ", _validImageFiles)));
+                    string.Format(Constants.InvalidFileFormatMessage, imageFileExtension, Constants.ImageText, string.Join("; ", Constants.ValidImageFiles)));
 
                 result = false;
             }
 
             string documentFileExtension = Path.GetExtension(model.UserTorrentData.FileName).ToLower();
-            if (!_validDocumentFiles.Contains(documentFileExtension))
+            if (!Constants.ValidDocumentFiles.Contains(documentFileExtension))
             {
                 ModelState.AddModelError(
                     nameof(CreateTorrentWidgetModel.UserTorrentData),
-                    string.Format(Constants.InvalidFileFormatMessage, documentFileExtension, string.Join("; ", _validDocumentFiles)));
+                    string.Format(Constants.InvalidFileFormatMessage, documentFileExtension, Constants.TorrentText, string.Join("; ", Constants.ValidDocumentFiles)));
 
                 result = false;
             }
@@ -114,7 +117,6 @@ namespace SitefinityWebApp.Mvc.Controllers
 
             return new CreateTorrentDto
             {
-                Id = Guid.NewGuid(),
                 Title = model.Title,
                 Description = model.Description,
                 AdditionalInfo = model.AdditionalInfo,
@@ -126,12 +128,10 @@ namespace SitefinityWebApp.Mvc.Controllers
 
         private CreateImageDto CreateImage(CreateTorrentWidgetModel model)
         {
-            Guid imageGuid = Guid.NewGuid();
-            string imageTitle = $"{model.Title}-{imageGuid}";
             var imageDto = new CreateImageDto()
             {
-                MasterId = imageGuid,
-                Title = imageTitle,
+                Id = Guid.NewGuid(),
+                Title = Constants.TorrentImageTitle,
                 Stream = model.UserImageData.InputStream,
                 FileName = model.UserImageData.FileName,
                 FileExtension = Path.GetExtension(model.UserImageData.FileName)
@@ -142,12 +142,10 @@ namespace SitefinityWebApp.Mvc.Controllers
 
         private CreateDocumentDto CreateDocument(CreateTorrentWidgetModel model)
         {
-            Guid documentGuid = Guid.NewGuid();
-            string documentTitle = $"{model.Title}-{documentGuid}";
             var documentDto = new CreateDocumentDto()
             {
-                MasterId = documentGuid,
-                Title = documentTitle,
+                Id = Guid.NewGuid(),
+                Title = Constants.TorrentFileTitle,
                 Stream = model.UserTorrentData.InputStream,
                 FileName = model.UserTorrentData.FileName,
                 FileExtension = Path.GetExtension(model.UserTorrentData.FileName)

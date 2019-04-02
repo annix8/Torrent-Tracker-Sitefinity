@@ -5,7 +5,7 @@ namespace SitefinityWebApp.TorrentTrackerServices.Dtos
 {
     public class CreateFileDtoBase
     {
-        public Guid MasterId { get; set; }
+        public Guid Id { get; set; }
         public string Title { get; set; }
         public Stream Stream { get; set; }
         public string FileName { get; set; }
