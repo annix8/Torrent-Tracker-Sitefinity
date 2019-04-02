@@ -1,4 +1,5 @@
-﻿using SitefinityWebApp.TorrentTrackerServices.Dtos;
+﻿using SitefinityWebApp.TorrentTrackerServices.Contracts;
+using SitefinityWebApp.TorrentTrackerServices.Dtos;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -16,17 +17,19 @@ using Telerik.Sitefinity.Versioning;
 
 namespace SitefinityWebApp.TorrentTrackerServices
 {
-    public class TorrentService
+    public class TorrentService : ITorrentService
     {
-        private readonly ImageService _imageService;
-        private readonly DocumentService _documentService;
-        private readonly TaxonomyService _taxonomyService;
+        private readonly IImageService _imageService;
+        private readonly IDocumentService _documentService;
+        private readonly ITaxonomyService _taxonomyService;
 
-        public TorrentService()
+        public TorrentService(IImageService imageService,
+            IDocumentService documentService,
+            ITaxonomyService taxonomyService)
         {
-            _imageService = new ImageService();
-            _documentService = new DocumentService();
-            _taxonomyService = new TaxonomyService();
+            _imageService = imageService;
+            _documentService = documentService;
+            _taxonomyService = taxonomyService;
         }
 
         public void CreateTorrentWithPublish(CreateTorrentDto createTorrentDto)

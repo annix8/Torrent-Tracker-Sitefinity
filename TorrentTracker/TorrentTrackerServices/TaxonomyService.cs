@@ -1,4 +1,5 @@
-﻿using System;
+﻿using SitefinityWebApp.TorrentTrackerServices.Contracts;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using Telerik.Sitefinity.Taxonomies;
@@ -6,7 +7,7 @@ using Telerik.Sitefinity.Taxonomies.Model;
 
 namespace SitefinityWebApp.TorrentTrackerServices
 {
-    public class TaxonomyService
+    public class TaxonomyService : ITaxonomyService
     {
         public List<string> GetTaxonNamesByTaxonomy(string taxonomyName)
         {

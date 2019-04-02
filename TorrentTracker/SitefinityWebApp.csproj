@@ -2,6 +2,17 @@
 <Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
   <PropertyGroup>
+    <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>
+    <VSToolsPath Condition="'$(VSToolsPath)' == ''">$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)</VSToolsPath>
+    <Use64BitIISExpress />
+    <IISExpressSSLPort />
+    <IISExpressAnonymousAuthentication />
+    <IISExpressWindowsAuthentication />
+    <IISExpressUseClassicPipelineMode />
+    <UseGlobalApplicationHostFile />
+  </PropertyGroup>
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
     <ProductVersion>9.0.30729</ProductVersion>
@@ -202,6 +213,9 @@
       <HintPath>bin\Microsoft.SharePoint.Client.Runtime.dll</HintPath>
       <Private>True</Private>
     </Reference>
+    <Reference Include="Microsoft.Web.Infrastructure, Version=1.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>packages\Microsoft.Web.Infrastructure.1.0.0.0\lib\net40\Microsoft.Web.Infrastructure.dll</HintPath>
+    </Reference>
     <Reference Include="MonAgentListener, Version=33.1.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>bin\MonAgentListener.dll</HintPath>
@@ -212,10 +226,26 @@
       <HintPath>bin\Nest.dll</HintPath>
       <Private>True</Private>
     </Reference>
-    <Reference Include="Newtonsoft.Json">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>bin\Newtonsoft.Json.dll</HintPath>
-      <Private>True</Private>
+    <Reference Include="Newtonsoft.Json, Version=10.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
+      <HintPath>packages\Newtonsoft.Json.10.0.1\lib\net45\Newtonsoft.Json.dll</HintPath>
+    </Reference>
+    <Reference Include="Ninject, Version=3.3.3.0, Culture=neutral, PublicKeyToken=c7192dc5380945e7, processorArchitecture=MSIL">
+      <HintPath>packages\Ninject.3.3.3\lib\net45\Ninject.dll</HintPath>
+    </Reference>
+    <Reference Include="Ninject.Web.Common, Version=3.3.0.0, Culture=neutral, PublicKeyToken=c7192dc5380945e7, processorArchitecture=MSIL">
+      <HintPath>packages\Ninject.Web.Common.3.3.0\lib\net45\Ninject.Web.Common.dll</HintPath>
+    </Reference>
+    <Reference Include="Ninject.Web.Common.WebHost, Version=3.3.0.0, Culture=neutral, PublicKeyToken=c7192dc5380945e7, processorArchitecture=MSIL">
+      <HintPath>packages\Ninject.Web.Common.WebHost.3.3.0\lib\net45\Ninject.Web.Common.WebHost.dll</HintPath>
+    </Reference>
+    <Reference Include="Ninject.Web.Mvc, Version=3.3.0.0, Culture=neutral, PublicKeyToken=c7192dc5380945e7, processorArchitecture=MSIL">
+      <HintPath>packages\Ninject.MVC5.3.3.0\lib\net45\Ninject.Web.Mvc.dll</HintPath>
+    </Reference>
+    <Reference Include="Ninject.Web.WebApi, Version=3.3.0.0, Culture=neutral, PublicKeyToken=c7192dc5380945e7, processorArchitecture=MSIL">
+      <HintPath>packages\Ninject.Web.WebApi.3.3.0\lib\net45\Ninject.Web.WebApi.dll</HintPath>
+    </Reference>
+    <Reference Include="Ninject.Web.WebApi.WebHost, Version=3.3.0.0, Culture=neutral, PublicKeyToken=c7192dc5380945e7, processorArchitecture=MSIL">
+      <HintPath>packages\Ninject.Web.WebApi.WebHost.3.3.0\lib\net45\Ninject.Web.WebApi.WebHost.dll</HintPath>
     </Reference>
     <Reference Include="Owin, Version=1.0.0.0, Culture=neutral, PublicKeyToken=f0ebd12fd5e55cc5, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
@@ -332,10 +362,6 @@
     </Reference>
     <Reference Include="Microsoft.Rest.ClientRuntime.Azure">
       <HintPath>bin\Microsoft.Rest.ClientRuntime.Azure.dll</HintPath>
-      <Private>True</Private>
-    </Reference>
-    <Reference Include="Microsoft.Web.Infrastructure, Version=1.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
-      <HintPath>bin\Microsoft.Web.Infrastructure.dll</HintPath>
       <Private>True</Private>
     </Reference>
     <Reference Include="Microsoft.Web.Administration, Version=7.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
@@ -477,11 +503,6 @@
       <HintPath>bin\MySql.Data.dll</HintPath>
       <Private>True</Private>
     </Reference>
-    <Reference Include="Ninject, Version=3.2.0.0, Culture=neutral, PublicKeyToken=c7192dc5380945e7, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>bin\Ninject.dll</HintPath>
-      <Private>True</Private>
-    </Reference>
     <Reference Include="payflow_dotNET">
       <HintPath>bin\payflow_dotNET.dll</HintPath>
       <Private>True</Private>
@@ -567,6 +588,9 @@
     <Reference Include="System.IO" />
     <Reference Include="System.Net" />
     <Reference Include="System.Net.Http" />
+    <Reference Include="System.Net.Http.Formatting, Version=5.2.3.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>packages\Microsoft.AspNet.WebApi.Client.5.2.3\lib\net45\System.Net.Http.Formatting.dll</HintPath>
+    </Reference>
     <Reference Include="System.Net.Http.WebRequest" />
     <Reference Include="System.Runtime.Caching" />
     <Reference Include="System.Runtime" />
@@ -590,6 +614,12 @@
       <HintPath>bin\System.Spatial.dll</HintPath>
       <Private>True</Private>
     </Reference>
+    <Reference Include="System.Web.Helpers, Version=3.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>packages\Microsoft.AspNet.WebPages.3.2.3\lib\net45\System.Web.Helpers.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Web.Http, Version=5.2.3.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>packages\Microsoft.AspNet.WebApi.Core.5.2.3\lib\net45\System.Web.Http.dll</HintPath>
+    </Reference>
     <Reference Include="System.Web.Http.Cors, Version=5.2.3.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
       <HintPath>bin\System.Web.Http.Cors.dll</HintPath>
       <SpecificVersion>False</SpecificVersion>
@@ -600,14 +630,15 @@
       <SpecificVersion>False</SpecificVersion>
       <Private>True</Private>
     </Reference>
+    <Reference Include="System.Web.Http.WebHost, Version=5.2.3.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>packages\Microsoft.AspNet.WebApi.WebHost.5.2.3\lib\net45\System.Web.Http.WebHost.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Web.Mvc, Version=5.2.3.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>packages\Microsoft.AspNet.Mvc.5.2.3\lib\net45\System.Web.Mvc.dll</HintPath>
+    </Reference>
     <Reference Include="System.Web.OData">
       <HintPath>bin\System.Web.OData.dll</HintPath>
       <SpecificVersion>False</SpecificVersion>
-      <Private>True</Private>
-    </Reference>
-    <Reference Include="System.Web.Helpers, Version=2.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>bin\System.Web.Helpers.dll</HintPath>
       <Private>True</Private>
     </Reference>
     <Reference Include="System.Web.Http.Owin, Version=5.2.3.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
@@ -620,31 +651,18 @@
       <HintPath>bin\System.Web.Http.Tracing.dll</HintPath>
       <Private>True</Private>
     </Reference>
-    <Reference Include="System.Web.Mvc, Version=4.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>bin\System.Web.Mvc.dll</HintPath>
-      <Private>True</Private>
-    </Reference>
-    <Reference Include="System.Web.Razor, Version=2.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>bin\System.Web.Razor.dll</HintPath>
-      <Private>True</Private>
+    <Reference Include="System.Web.Razor, Version=3.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>packages\Microsoft.AspNet.Razor.3.2.3\lib\net45\System.Web.Razor.dll</HintPath>
     </Reference>
     <Reference Include="System.Web.Services" />
-    <Reference Include="System.Web.WebPages, Version=2.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>bin\System.Web.WebPages.dll</HintPath>
-      <Private>True</Private>
+    <Reference Include="System.Web.WebPages, Version=3.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>packages\Microsoft.AspNet.WebPages.3.2.3\lib\net45\System.Web.WebPages.dll</HintPath>
     </Reference>
-    <Reference Include="System.Web.WebPages.Deployment, Version=2.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>bin\System.Web.WebPages.Deployment.dll</HintPath>
-      <Private>True</Private>
+    <Reference Include="System.Web.WebPages.Deployment, Version=3.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>packages\Microsoft.AspNet.WebPages.3.2.3\lib\net45\System.Web.WebPages.Deployment.dll</HintPath>
     </Reference>
-    <Reference Include="System.Web.WebPages.Razor, Version=2.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>bin\System.Web.WebPages.Razor.dll</HintPath>
-      <Private>True</Private>
+    <Reference Include="System.Web.WebPages.Razor, Version=3.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>packages\Microsoft.AspNet.WebPages.3.2.3\lib\net45\System.Web.WebPages.Razor.dll</HintPath>
     </Reference>
     <Reference Include="System.Windows">
       <HintPath>bin\System.Windows.dll</HintPath>
@@ -761,16 +779,6 @@
     <Reference Include="Telerik.Sitefinity.AdminBridge">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>bin\Telerik.Sitefinity.AdminBridge.dll</HintPath>
-      <Private>True</Private>
-    </Reference>
-    <Reference Include="WebActivatorEx">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>bin\WebActivatorEx.dll</HintPath>
-      <Private>True</Private>
-    </Reference>
-    <Reference Include="Ninject.Web.Common">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>bin\Ninject.Web.Common.dll</HintPath>
       <Private>True</Private>
     </Reference>
     <Reference Include="RazorGenerator.Mvc">
@@ -1054,18 +1062,6 @@
       <HintPath>bin\Telerik.Sitefinity.SitemapGenerator.dll</HintPath>
       <Private>True</Private>
     </Reference>
-    <Reference Include="System.Net.Http.Formatting">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>bin\System.Net.Http.Formatting.dll</HintPath>
-    </Reference>
-    <Reference Include="System.Web.Http">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>bin\System.Web.Http.dll</HintPath>
-    </Reference>
-    <Reference Include="System.Web.Http.WebHost">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>bin\System.Web.Http.WebHost.dll</HintPath>
-    </Reference>
     <Reference Include="Telerik.Sitefinity.Translations">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>bin\Telerik.Sitefinity.Translations.dll</HintPath>
@@ -1194,13 +1190,126 @@
       <HintPath>bin\Telerik.Sitefinity.WebSecurity.dll</HintPath>
       <Private>True</Private>
     </Reference>
+    <Reference Include="WebActivatorEx, Version=2.0.0.0, Culture=neutral, PublicKeyToken=7b26dc2a43f6a0d4, processorArchitecture=MSIL">
+      <HintPath>packages\WebActivatorEx.2.0\lib\net40\WebActivatorEx.dll</HintPath>
+    </Reference>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="AzureWebRole.cs" />
+    <Compile Include="Constants.cs" />
+    <Compile Include="Global.asax.cs">
+      <DependentUpon>Global.asax</DependentUpon>
+    </Compile>
+    <Compile Include="IoC\InterfaceMappings.cs" />
+    <Compile Include="IoC\NinjectControllerFactory.cs" />
+    <Compile Include="Mvc\Controllers\CreateTorrentWidgetController.cs" />
+    <Compile Include="Mvc\Models\CreateTorrentWidgetModel.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="TorrentTrackerServices\Contracts\IDocumentService.cs" />
+    <Compile Include="TorrentTrackerServices\Contracts\IImageService.cs" />
+    <Compile Include="TorrentTrackerServices\Contracts\ITaxonomyService.cs" />
+    <Compile Include="TorrentTrackerServices\Contracts\ITorrentService.cs" />
+    <Compile Include="TorrentTrackerServices\DocumentService.cs" />
+    <Compile Include="TorrentTrackerServices\Dtos\CreateDocumentDto.cs" />
+    <Compile Include="TorrentTrackerServices\Dtos\CreateFileDtoBase.cs" />
+    <Compile Include="TorrentTrackerServices\Dtos\CreateImageDto.cs" />
+    <Compile Include="TorrentTrackerServices\Dtos\CreateTorrentDto.cs" />
+    <Compile Include="TorrentTrackerServices\ImageService.cs" />
+    <Compile Include="TorrentTrackerServices\TaxonomyService.cs" />
+    <Compile Include="TorrentTrackerServices\TorrentService.cs" />
   </ItemGroup>
   <ItemGroup>
+    <Content Include="AdminApp\app.be82abc013ae024e4e18.bundle.js" />
+    <Content Include="AdminApp\assets\auth\oidc-client.min.js" />
+    <Content Include="AdminApp\assets\auth\silent-renew.html" />
+    <Content Include="AdminApp\assets\auth\silent-renew.js" />
+    <Content Include="AdminApp\assets\icons\apple-touch-icon-114x114.png" />
+    <Content Include="AdminApp\assets\icons\apple-touch-icon-120x120.png" />
+    <Content Include="AdminApp\assets\icons\apple-touch-icon-144x144.png" />
+    <Content Include="AdminApp\assets\icons\apple-touch-icon-152x152.png" />
+    <Content Include="AdminApp\assets\icons\apple-touch-icon-57x57.png" />
+    <Content Include="AdminApp\assets\icons\apple-touch-icon-60x60.png" />
+    <Content Include="AdminApp\assets\icons\apple-touch-icon-72x72.png" />
+    <Content Include="AdminApp\assets\icons\apple-touch-icon-76x76.png" />
+    <Content Include="AdminApp\assets\icons\favicon-128x128.png" />
+    <Content Include="AdminApp\assets\icons\favicon-16x16.png" />
+    <Content Include="AdminApp\assets\icons\favicon-196x196.png" />
+    <Content Include="AdminApp\assets\icons\favicon-32x32.png" />
+    <Content Include="AdminApp\assets\icons\favicon-96x96.png" />
+    <Content Include="AdminApp\assets\icons\mstile-144x144.png" />
+    <Content Include="AdminApp\assets\icons\mstile-150x150.png" />
+    <Content Include="AdminApp\assets\icons\mstile-310x310.png" />
+    <Content Include="AdminApp\assets\icons\mstile-70x70.png" />
+    <Content Include="AdminApp\assets\js\kendo-editor\kendo.custom.min.js" />
+    <Content Include="AdminApp\assets\js\monaco-editor\vs\base\worker\workerMain.js" />
+    <Content Include="AdminApp\assets\js\monaco-editor\vs\basic-languages\src\bat.js" />
+    <Content Include="AdminApp\assets\js\monaco-editor\vs\basic-languages\src\coffee.js" />
+    <Content Include="AdminApp\assets\js\monaco-editor\vs\basic-languages\src\cpp.js" />
+    <Content Include="AdminApp\assets\js\monaco-editor\vs\basic-languages\src\csharp.js" />
+    <Content Include="AdminApp\assets\js\monaco-editor\vs\basic-languages\src\css.js" />
+    <Content Include="AdminApp\assets\js\monaco-editor\vs\basic-languages\src\dockerfile.js" />
+    <Content Include="AdminApp\assets\js\monaco-editor\vs\basic-languages\src\fsharp.js" />
+    <Content Include="AdminApp\assets\js\monaco-editor\vs\basic-languages\src\go.js" />
+    <Content Include="AdminApp\assets\js\monaco-editor\vs\basic-languages\src\handlebars.js" />
+    <Content Include="AdminApp\assets\js\monaco-editor\vs\basic-languages\src\html.js" />
+    <Content Include="AdminApp\assets\js\monaco-editor\vs\basic-languages\src\ini.js" />
+    <Content Include="AdminApp\assets\js\monaco-editor\vs\basic-languages\src\java.js" />
+    <Content Include="AdminApp\assets\js\monaco-editor\vs\basic-languages\src\less.js" />
+    <Content Include="AdminApp\assets\js\monaco-editor\vs\basic-languages\src\lua.js" />
+    <Content Include="AdminApp\assets\js\monaco-editor\vs\basic-languages\src\markdown.js" />
+    <Content Include="AdminApp\assets\js\monaco-editor\vs\basic-languages\src\msdax.js" />
+    <Content Include="AdminApp\assets\js\monaco-editor\vs\basic-languages\src\objective-c.js" />
+    <Content Include="AdminApp\assets\js\monaco-editor\vs\basic-languages\src\php.js" />
+    <Content Include="AdminApp\assets\js\monaco-editor\vs\basic-languages\src\postiats.js" />
+    <Content Include="AdminApp\assets\js\monaco-editor\vs\basic-languages\src\powershell.js" />
+    <Content Include="AdminApp\assets\js\monaco-editor\vs\basic-languages\src\pug.js" />
+    <Content Include="AdminApp\assets\js\monaco-editor\vs\basic-languages\src\python.js" />
+    <Content Include="AdminApp\assets\js\monaco-editor\vs\basic-languages\src\r.js" />
+    <Content Include="AdminApp\assets\js\monaco-editor\vs\basic-languages\src\razor.js" />
+    <Content Include="AdminApp\assets\js\monaco-editor\vs\basic-languages\src\ruby.js" />
+    <Content Include="AdminApp\assets\js\monaco-editor\vs\basic-languages\src\scss.js" />
+    <Content Include="AdminApp\assets\js\monaco-editor\vs\basic-languages\src\solidity.js" />
+    <Content Include="AdminApp\assets\js\monaco-editor\vs\basic-languages\src\sql.js" />
+    <Content Include="AdminApp\assets\js\monaco-editor\vs\basic-languages\src\swift.js" />
+    <Content Include="AdminApp\assets\js\monaco-editor\vs\basic-languages\src\vb.js" />
+    <Content Include="AdminApp\assets\js\monaco-editor\vs\basic-languages\src\xml.js" />
+    <Content Include="AdminApp\assets\js\monaco-editor\vs\basic-languages\src\yaml.js" />
+    <Content Include="AdminApp\assets\js\monaco-editor\vs\editor\contrib\suggest\browser\media\String_16x.svg" />
+    <Content Include="AdminApp\assets\js\monaco-editor\vs\editor\contrib\suggest\browser\media\String_inverse_16x.svg" />
+    <Content Include="AdminApp\assets\js\monaco-editor\vs\editor\editor.main.css" />
+    <Content Include="AdminApp\assets\js\monaco-editor\vs\editor\editor.main.js" />
+    <Content Include="AdminApp\assets\js\monaco-editor\vs\editor\editor.main.nls.de.js" />
+    <Content Include="AdminApp\assets\js\monaco-editor\vs\editor\editor.main.nls.es.js" />
+    <Content Include="AdminApp\assets\js\monaco-editor\vs\editor\editor.main.nls.fr.js" />
+    <Content Include="AdminApp\assets\js\monaco-editor\vs\editor\editor.main.nls.hu.js" />
+    <Content Include="AdminApp\assets\js\monaco-editor\vs\editor\editor.main.nls.it.js" />
+    <Content Include="AdminApp\assets\js\monaco-editor\vs\editor\editor.main.nls.ja.js" />
+    <Content Include="AdminApp\assets\js\monaco-editor\vs\editor\editor.main.nls.js" />
+    <Content Include="AdminApp\assets\js\monaco-editor\vs\editor\editor.main.nls.ko.js" />
+    <Content Include="AdminApp\assets\js\monaco-editor\vs\editor\editor.main.nls.pt-br.js" />
+    <Content Include="AdminApp\assets\js\monaco-editor\vs\editor\editor.main.nls.ru.js" />
+    <Content Include="AdminApp\assets\js\monaco-editor\vs\editor\editor.main.nls.tr.js" />
+    <Content Include="AdminApp\assets\js\monaco-editor\vs\editor\editor.main.nls.zh-cn.js" />
+    <Content Include="AdminApp\assets\js\monaco-editor\vs\editor\editor.main.nls.zh-tw.js" />
+    <Content Include="AdminApp\assets\js\monaco-editor\vs\editor\standalone\browser\quickOpen\symbol-sprite.svg" />
+    <Content Include="AdminApp\assets\js\monaco-editor\vs\language\css\cssMode.js" />
+    <Content Include="AdminApp\assets\js\monaco-editor\vs\language\css\cssWorker.js" />
+    <Content Include="AdminApp\assets\js\monaco-editor\vs\language\html\htmlMode.js" />
+    <Content Include="AdminApp\assets\js\monaco-editor\vs\language\html\htmlWorker.js" />
+    <Content Include="AdminApp\assets\js\monaco-editor\vs\language\json\jsonMode.js" />
+    <Content Include="AdminApp\assets\js\monaco-editor\vs\language\json\jsonWorker.js" />
+    <Content Include="AdminApp\assets\js\monaco-editor\vs\language\typescript\lib\typescriptServices.js" />
+    <Content Include="AdminApp\assets\js\monaco-editor\vs\language\typescript\src\mode.js" />
+    <Content Include="AdminApp\assets\js\monaco-editor\vs\language\typescript\src\worker.js" />
+    <Content Include="AdminApp\assets\js\monaco-editor\vs\loader.js" />
+    <Content Include="AdminApp\DecExtensions\dec-iris.extensions.bundle.js" />
+    <Content Include="AdminApp\elements.bb3cfdc0183913a78758.bundle.js" />
+    <Content Include="AdminApp\favicon.ico" />
+    <Content Include="AdminApp\index.html" />
+    <Content Include="AdminApp\vendors.73c3e7af91de2fb2bdd0.bundle.js" />
     <Content Include="Default.aspx" />
+    <Content Include="Global.asax" />
+    <Content Include="Mvc\Scripts\CreateTorrentWidget\designerview-simple.js" />
     <Content Include="Sitefinity\Default.aspx" />
     <Content Include="Sitefinity\Services\Analytics\AnalyticsPermissionsService.svc" />
     <Content Include="Sitefinity\Services\Analytics\DashboardData.svc" />
@@ -1360,10 +1469,18 @@
     <Folder Include="App_Data\Sitefinity\" />
   </ItemGroup>
   <ItemGroup>
+    <Content Include="AdminApp\assets\js\kendo-editor\kendo.custom.min.js.map" />
+    <Content Include="AdminApp\config.json" />
     <None Include="App_Data\GeoLocation\GeoLite2-City.mmdb" />
+    <Content Include="Mvc\Views\CreateTorrentWidget\DesignerView.Simple.cshtml" />
+    <Content Include="Mvc\Views\CreateTorrentWidget\Index.cshtml" />
+    <Content Include="Mvc\Views\Torrent\Detail.Torrent.cshtml" />
+    <Content Include="Mvc\Views\Torrent\List.Torrent.cshtml" />
+    <None Include="packages.config" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
-  <Import Project="$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v10.0\WebApplications\Microsoft.WebApplication.targets" />
+  <Import Project="$(VSToolsPath)\WebApplications\Microsoft.WebApplication.targets" Condition="'$(VSToolsPath)' != ''" />
+  <Import Project="$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v10.0\WebApplications\Microsoft.WebApplication.targets" Condition="false" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
   <Target Name="BeforeBuild">

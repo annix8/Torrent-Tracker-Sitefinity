@@ -1,4 +1,5 @@
-﻿using SitefinityWebApp.TorrentTrackerServices.Dtos;
+﻿using SitefinityWebApp.TorrentTrackerServices.Contracts;
+using SitefinityWebApp.TorrentTrackerServices.Dtos;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -9,7 +10,7 @@ using Telerik.Sitefinity.Workflow;
 
 namespace SitefinityWebApp.TorrentTrackerServices
 {
-    public class ImageService
+    public class ImageService : IImageService
     {
         public Image CreateImageWithNativeAPI(CreateImageDto createImageDto, Guid torrentId)
         {
@@ -45,19 +46,6 @@ namespace SitefinityWebApp.TorrentTrackerServices
                 var bag = new Dictionary<string, string>();
                 bag.Add("ContentType", typeof(Image).FullName);
                 WorkflowManager.MessageWorkflow(createImageDto.Id, typeof(Image), null, "Publish", false, bag);
-            }
-
-            return image;
-        }
-
-        public Image GetImageNativeAPI(Guid masterImageId)
-        {
-            LibrariesManager librariesManager = LibrariesManager.GetManager();
-            Image image = librariesManager.GetImages().Where(i => i.Id == masterImageId).FirstOrDefault();
-
-            if (image != null)
-            {
-                image = librariesManager.Lifecycle.GetLive(image) as Image;
             }
 
             return image;

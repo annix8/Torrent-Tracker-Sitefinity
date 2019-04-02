@@ -6,6 +6,7 @@
 
 using SitefinityWebApp.Mvc.Models;
 using SitefinityWebApp.TorrentTrackerServices;
+using SitefinityWebApp.TorrentTrackerServices.Contracts;
 using SitefinityWebApp.TorrentTrackerServices.Dtos;
 using System;
 using System.IO;
@@ -19,13 +20,14 @@ namespace SitefinityWebApp.Mvc.Controllers
     [ControllerToolboxItem(Name = "CreateTorrentWidget_MVC", Title = "Create Torrent", SectionName = "Create torrents")]
     public class CreateTorrentWidgetController : Controller
     {
-        private readonly TorrentService _torrentService;
-        private readonly TaxonomyService _taxonomyService;
+        private readonly ITorrentService _torrentService;
+        private readonly ITaxonomyService _taxonomyService;
 
-        public CreateTorrentWidgetController()
+        public CreateTorrentWidgetController(ITorrentService torrentService,
+            ITaxonomyService taxonomyService)
         {
-            _torrentService = new TorrentService();
-            _taxonomyService = new TaxonomyService();
+            _torrentService = torrentService;
+            _taxonomyService = taxonomyService;
         }
 
         public ActionResult Index()
