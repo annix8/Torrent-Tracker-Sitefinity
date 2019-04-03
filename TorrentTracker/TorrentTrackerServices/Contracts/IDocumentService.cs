@@ -6,6 +6,6 @@ namespace SitefinityWebApp.TorrentTrackerServices.Contracts
 {
     public interface IDocumentService
     {
-        Document CreateDocumentNativeAPI(CreateDocumentDto createDocumentDto, Guid torrentId);
+        Document CreateDocumentNativeAPI(CreateDocumentDto createDocumentDto);
     }
 }

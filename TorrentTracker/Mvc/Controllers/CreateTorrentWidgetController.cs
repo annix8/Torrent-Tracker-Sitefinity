@@ -50,7 +50,7 @@ namespace SitefinityWebApp.Mvc.Controllers
             StringBuilder sb = new StringBuilder();
             try
             {
-                CreateTorrentDto torrent = GetTorrentData(model);
+                CreateTorrentDto torrent = DtoCreator.CreateTorrent(model);
                 _torrentService.CreateTorrentWithPublish(torrent);
 
                 sb.AppendLine(string.Format(Constants.CreateTorrentSuccessMessage, model.Title));
@@ -110,50 +110,6 @@ namespace SitefinityWebApp.Mvc.Controllers
             }
 
             return result;
-        }
-
-        private CreateTorrentDto GetTorrentData(CreateTorrentWidgetModel model)
-        {
-            CreateImageDto image = CreateImage(model);
-            CreateDocumentDto document = CreateDocument(model);
-
-            return new CreateTorrentDto
-            {
-                Title = model.Title,
-                Description = model.Description,
-                AdditionalInfo = model.AdditionalInfo,
-                Genres = model.Genres,
-                ImageDto = image,
-                DocumentDto = document
-            };
-        }
-
-        private CreateImageDto CreateImage(CreateTorrentWidgetModel model)
-        {
-            var imageDto = new CreateImageDto()
-            {
-                Id = Guid.NewGuid(),
-                Title = Constants.TorrentImageTitle,
-                Stream = model.UserImageData.InputStream,
-                FileName = model.UserImageData.FileName,
-                FileExtension = Path.GetExtension(model.UserImageData.FileName)
-            };
-
-            return imageDto;
-        }
-
-        private CreateDocumentDto CreateDocument(CreateTorrentWidgetModel model)
-        {
-            var documentDto = new CreateDocumentDto()
-            {
-                Id = Guid.NewGuid(),
-                Title = Constants.TorrentFileTitle,
-                Stream = model.UserTorrentData.InputStream,
-                FileName = model.UserTorrentData.FileName,
-                FileExtension = Path.GetExtension(model.UserTorrentData.FileName)
-            };
-
-            return documentDto;
         }
     }
 }

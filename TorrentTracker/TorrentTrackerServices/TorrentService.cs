@@ -58,14 +58,14 @@ namespace SitefinityWebApp.TorrentTrackerServices
                 torrentItem.Organizer.AddTaxa(Constants.GenresTaxonomyName, taxonIds.ToArray());
             }
 
-            Image imageFileItem = _imageService.CreateImageWithNativeAPI(createTorrentDto.ImageDto, torrentItem.Id);
+            Image imageFileItem = _imageService.CreateImageWithNativeAPI(createTorrentDto.ImageDto);
             if (imageFileItem != null)
             {
                 // This is how we relate an item
                 torrentItem.CreateRelation(imageFileItem, "ImageFile");
             }
 
-            Document torrentFileItem = _documentService.CreateDocumentNativeAPI(createTorrentDto.DocumentDto, torrentItem.Id);
+            Document torrentFileItem = _documentService.CreateDocumentNativeAPI(createTorrentDto.DocumentDto);
             if (torrentFileItem != null)
             {
                 // This is how we relate an item

@@ -636,8 +636,6 @@ var http_1 = __webpack_require__(/*! @angular/common/http */ 100008);
  */
 var ImageComponent = /** @class */ (function () {
     function ImageComponent(http) {
-        // Sample height of the image
-        this.imageHeight = 50;
         this._httpClient = http;
     }
     ImageComponent.prototype.ngOnInit = function () {
@@ -648,7 +646,9 @@ var ImageComponent = /** @class */ (function () {
         // let url = `${HTTP_PREFIX}/sf/system/torrents(${torrentGuid})?$select=*&$expand=ImageFile&sf_provider=OpenAccessDataProvider&sf_culture=en&sf_fallback_prop_names=ImageFile.Title`;
         this._httpClient.get(url)
             .subscribe(function (data) {
-            _this.imageSource = data.ImageFile.Url;
+            if (data.ImageFile.Url) {
+                _this.imageSource = data.ImageFile.Url;
+            }
         }, function (error) {
             console.log(error);
         });

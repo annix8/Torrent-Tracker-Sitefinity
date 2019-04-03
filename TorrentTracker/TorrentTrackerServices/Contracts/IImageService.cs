@@ -6,6 +6,6 @@ namespace SitefinityWebApp.TorrentTrackerServices.Contracts
 {
     public interface IImageService
     {
-        Image CreateImageWithNativeAPI(CreateImageDto createImageDto, Guid torrentId);
+        Image CreateImageWithNativeAPI(CreateImageDto createImageDto);
     }
 }

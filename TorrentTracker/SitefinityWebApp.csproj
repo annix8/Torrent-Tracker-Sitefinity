@@ -1210,6 +1210,7 @@
     <Compile Include="TorrentTrackerServices\Contracts\ITaxonomyService.cs" />
     <Compile Include="TorrentTrackerServices\Contracts\ITorrentService.cs" />
     <Compile Include="TorrentTrackerServices\DocumentService.cs" />
+    <Compile Include="TorrentTrackerServices\DtoCreator.cs" />
     <Compile Include="TorrentTrackerServices\Dtos\CreateDocumentDto.cs" />
     <Compile Include="TorrentTrackerServices\Dtos\CreateFileDtoBase.cs" />
     <Compile Include="TorrentTrackerServices\Dtos\CreateImageDto.cs" />
