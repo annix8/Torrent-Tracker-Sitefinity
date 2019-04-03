@@ -16,6 +16,9 @@ export class ImageComponent implements OnInit, DataContextComponent {
     // This context is automatically set for each component instantiated in the grid.
     // It holds metadata that includes the data item for the current row and the column model as well.
     context: DataContext;
+    
+    // Sample height of the image
+    protected imageHeight = 50;
     protected imageSource;
     private _httpClient;
 
@@ -27,7 +30,7 @@ export class ImageComponent implements OnInit, DataContextComponent {
         // let url = `${HTTP_PREFIX}/sf/system/torrents(${torrentGuid})?$select=*&$expand=ImageFile&sf_provider=OpenAccessDataProvider&sf_culture=en&sf_fallback_prop_names=ImageFile.Title`;
         this._httpClient.get(url)
             .subscribe(data => {
-                if(data.ImageFile.Url){
+                if(data.ImageFile){
                     this.imageSource = data.ImageFile.Url;
                 }
             }, error => {
