@@ -3,8 +3,8 @@
     public static class Constants
     {
         public const string GenresTaxonomyName = "Genres";
-        public const string InvalidFileFormatMessage = "Invalid file format {0} for file type {1}. Valid formats are {2}";
-        public const string CreateTorrentSuccessMessage = "Torrent {0} successfully created.";
+        public const string InvalidFileFormatMessage = "Invalid file format {0} for file type \"{1}\". Valid formats are {2}";
+        public const string CreateTorrentSuccessMessage = "Torrent \"{0}\" successfully created.";
         public const string ImageText = "image";
         public const string TorrentText = "torrent";
         public const string SuccessMessageKey = "SuccessMessage";
