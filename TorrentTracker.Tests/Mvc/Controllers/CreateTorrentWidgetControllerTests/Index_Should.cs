@@ -3,6 +3,7 @@ using Moq;
 using SitefinityWebApp.Mvc.Controllers;
 using SitefinityWebApp.Mvc.Models;
 using SitefinityWebApp.TorrentTrackerServices.Contracts;
+using SitefinityWebApp.TorrentTrackerServices.Dtos;
 using System.Collections.Generic;
 using System.Web;
 using System.Web.Mvc;
@@ -33,6 +34,32 @@ namespace TorrentTracker.Tests.Mvc.Controllers.CreateTorrentWidgetControllerTest
         }
 
         [TestMethod]
+        public void CallTorrentService_When_ModelStateIsValid()
+        {
+            _modelStateValidatorServiceStub.Setup(x => x.Validate(It.IsAny<ModelStateDictionary>(), It.IsAny<CreateTorrentWidgetModel>()))
+                .Returns(true);
+
+            CreateTorrentWidgetModel torrentWidgetModel = CreateTorrentWidgetModel();
+
+            _controller.Index(torrentWidgetModel);
+
+            _torrentServiceStub.Verify(x => x.CreateTorrentWithPublish(It.IsAny<CreateTorrentDto>()), Times.Exactly(1));
+        }
+
+        [TestMethod]
+        public void NotCallTorrentService_When_ModelStateIsInvalid()
+        {
+            _modelStateValidatorServiceStub.Setup(x => x.Validate(It.IsAny<ModelStateDictionary>(), It.IsAny<CreateTorrentWidgetModel>()))
+                .Returns(false);
+
+            CreateTorrentWidgetModel torrentWidgetModel = CreateTorrentWidgetModel();
+
+            _controller.Index(torrentWidgetModel);
+
+            _torrentServiceStub.Verify(x => x.CreateTorrentWithPublish(It.IsAny<CreateTorrentDto>()), Times.Exactly(0));
+        }
+
+        [TestMethod]
         public void AddSuccessMessageToTempData_When_ModelStateIsValid()
         {
             _modelStateValidatorServiceStub.Setup(x => x.Validate(It.IsAny<ModelStateDictionary>(), It.IsAny<CreateTorrentWidgetModel>()))
@@ -56,6 +83,19 @@ namespace TorrentTracker.Tests.Mvc.Controllers.CreateTorrentWidgetControllerTest
             _controller.Index(torrentWidgetModel);
 
             Assert.IsTrue(_controller.TempData.ContainsKey(SitefinityWebApp.Constants.ErrorMessageKey));
+        }
+
+        [TestMethod]
+        public void NotAddSuccessMessageToTempData_When_ModelStateIsInvalid()
+        {
+            _modelStateValidatorServiceStub.Setup(x => x.Validate(It.IsAny<ModelStateDictionary>(), It.IsAny<CreateTorrentWidgetModel>()))
+                .Returns(false);
+
+            CreateTorrentWidgetModel torrentWidgetModel = CreateTorrentWidgetModel();
+
+            _controller.Index(torrentWidgetModel);
+
+            Assert.IsFalse(_controller.TempData.ContainsKey(SitefinityWebApp.Constants.SuccessMessageKey));
         }
 
         private CreateTorrentWidgetModel CreateTorrentWidgetModel()
