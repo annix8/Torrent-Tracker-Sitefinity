@@ -60,6 +60,19 @@ namespace TorrentTracker.Tests.Mvc.Controllers.CreateTorrentWidgetControllerTest
         }
 
         [TestMethod]
+        public void CallTaxonomyServiceToCreateGenres_When_ModelStateIsInvalid()
+        {
+            _modelStateValidatorServiceStub.Setup(x => x.Validate(It.IsAny<ModelStateDictionary>(), It.IsAny<CreateTorrentWidgetModel>()))
+                .Returns(false);
+
+            CreateTorrentWidgetModel torrentWidgetModel = CreateTorrentWidgetModel();
+
+            _controller.Index(torrentWidgetModel);
+
+            _taxonomyServiceStub.Verify(x => x.GetTaxonNamesByTaxonomy(SitefinityWebApp.Constants.GenresTaxonomyName), Times.Exactly(1));
+        }
+
+        [TestMethod]
         public void AddSuccessMessageToTempData_When_ModelStateIsValid()
         {
             _modelStateValidatorServiceStub.Setup(x => x.Validate(It.IsAny<ModelStateDictionary>(), It.IsAny<CreateTorrentWidgetModel>()))
