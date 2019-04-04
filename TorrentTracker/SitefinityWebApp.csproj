@@ -1197,6 +1197,8 @@
   <ItemGroup>
     <Compile Include="AzureWebRole.cs" />
     <Compile Include="Constants.cs" />
+    <Compile Include="Facades\Contracts\IPathFacade.cs" />
+    <Compile Include="Facades\PathFacade.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
@@ -1207,6 +1209,7 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="TorrentTrackerServices\Contracts\IDocumentService.cs" />
     <Compile Include="TorrentTrackerServices\Contracts\IImageService.cs" />
+    <Compile Include="TorrentTrackerServices\Contracts\IModelStateValidatorService.cs" />
     <Compile Include="TorrentTrackerServices\Contracts\ITaxonomyService.cs" />
     <Compile Include="TorrentTrackerServices\Contracts\ITorrentService.cs" />
     <Compile Include="TorrentTrackerServices\DocumentService.cs" />
@@ -1216,6 +1219,7 @@
     <Compile Include="TorrentTrackerServices\Dtos\CreateImageDto.cs" />
     <Compile Include="TorrentTrackerServices\Dtos\CreateTorrentDto.cs" />
     <Compile Include="TorrentTrackerServices\ImageService.cs" />
+    <Compile Include="TorrentTrackerServices\ModelStateValidatorService.cs" />
     <Compile Include="TorrentTrackerServices\TaxonomyService.cs" />
     <Compile Include="TorrentTrackerServices\TorrentService.cs" />
   </ItemGroup>

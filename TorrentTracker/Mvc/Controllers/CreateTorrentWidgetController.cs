@@ -9,8 +9,6 @@ using SitefinityWebApp.TorrentTrackerServices;
 using SitefinityWebApp.TorrentTrackerServices.Contracts;
 using SitefinityWebApp.TorrentTrackerServices.Dtos;
 using System;
-using System.IO;
-using System.Linq;
 using System.Text;
 using System.Web.Mvc;
 using Telerik.Sitefinity.Mvc;
@@ -22,12 +20,15 @@ namespace SitefinityWebApp.Mvc.Controllers
     {
         private readonly ITorrentService _torrentService;
         private readonly ITaxonomyService _taxonomyService;
+        private readonly IModelStateValidatorService _modelStateValidatorService;
 
         public CreateTorrentWidgetController(ITorrentService torrentService,
-            ITaxonomyService taxonomyService)
+            ITaxonomyService taxonomyService,
+            IModelStateValidatorService modelStateValidatorService)
         {
             _torrentService = torrentService;
             _taxonomyService = taxonomyService;
+            _modelStateValidatorService = modelStateValidatorService;
         }
 
         public ActionResult Index()
@@ -39,9 +40,9 @@ namespace SitefinityWebApp.Mvc.Controllers
         [HttpPost]
         public ActionResult Index(CreateTorrentWidgetModel model)
         {
-            if (!ValidateModel(model))
+            if (!_modelStateValidatorService.Validate(ModelState, model))
             {
-                // quickfix to populate genres when invalid data is passed on Add torrent
+                // quick solution to populate genres when invalid data is passed on Add torrent
                 var genres = _taxonomyService.GetTaxonNamesByTaxonomy(Constants.GenresTaxonomyName);
                 model.Genres = genres;
                 return View(model);
@@ -78,38 +79,6 @@ namespace SitefinityWebApp.Mvc.Controllers
             {
                 Genres = genres
             };
-        }
-
-        private bool ValidateModel(CreateTorrentWidgetModel model)
-        {
-            if (!ModelState.IsValid)
-            {
-                return false;
-            }
-
-            bool result = true;
-
-            string imageFileExtension = Path.GetExtension(model.UserImageData.FileName).ToLower();
-            if (!Constants.ValidImageFiles.Contains(imageFileExtension))
-            {
-                ModelState.AddModelError(
-                    nameof(CreateTorrentWidgetModel.UserImageData),
-                    string.Format(Constants.InvalidFileFormatMessage, imageFileExtension, Constants.ImageText, string.Join("; ", Constants.ValidImageFiles)));
-
-                result = false;
-            }
-
-            string documentFileExtension = Path.GetExtension(model.UserTorrentData.FileName).ToLower();
-            if (!Constants.ValidDocumentFiles.Contains(documentFileExtension))
-            {
-                ModelState.AddModelError(
-                    nameof(CreateTorrentWidgetModel.UserTorrentData),
-                    string.Format(Constants.InvalidFileFormatMessage, documentFileExtension, Constants.TorrentText, string.Join("; ", Constants.ValidDocumentFiles)));
-
-                result = false;
-            }
-
-            return result;
         }
     }
 }
