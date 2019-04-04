@@ -5,19 +5,20 @@
     ------------------------------------------------------------------------------ *@
 
 @using Telerik.Sitefinity.UI.MVC;
+@using SitefinityWebApp;
 
 @model SitefinityWebApp.Mvc.Models.CreateTorrentWidgetModel
 
-@if (!string.IsNullOrEmpty(ViewBag.SuccessMessage))
+@if (TempData.ContainsKey(Constants.SuccessMessageKey))
 {
     <div class="alert alert-success" role="alert">
-        <p>@ViewBag.SuccessMessage</p>
+        <p>@TempData[Constants.SuccessMessageKey]</p>
     </div>
 }
-else if (!string.IsNullOrEmpty(ViewBag.ErrorMessage))
+else if (TempData.ContainsKey(Constants.ErrorMessageKey))
 {
     <div class="alert alert-danger" role="alert">
-        <p>@ViewBag.ErrorMessage</p>
+        <p>@TempData[Constants.ErrorMessageKey]</p>
     </div>
 }
 

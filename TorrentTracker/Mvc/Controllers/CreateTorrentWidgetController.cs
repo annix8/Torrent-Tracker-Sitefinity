@@ -54,7 +54,7 @@ namespace SitefinityWebApp.Mvc.Controllers
                 _torrentService.CreateTorrentWithPublish(torrent);
 
                 sb.AppendLine(string.Format(Constants.CreateTorrentSuccessMessage, model.Title));
-                ViewBag.SuccessMessage = sb.ToString();
+                TempData.Add(Constants.SuccessMessageKey, sb.ToString());
             }
             catch (Exception exc)
             {
@@ -64,11 +64,11 @@ namespace SitefinityWebApp.Mvc.Controllers
                 {
                     sb.AppendLine(exc.InnerException.Message);
                 }
-
-                ViewBag.ErrorMessage = sb.ToString();
+                
+                TempData.Add(Constants.ErrorMessageKey, sb.ToString());
             }
 
-            return View(CreateInitialTorrentWidgetModel());
+            return RedirectToAction(nameof(CreateTorrentWidgetController.Index));
         }
 
         private CreateTorrentWidgetModel CreateInitialTorrentWidgetModel()
