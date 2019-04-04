@@ -3,7 +3,7 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 15
 VisualStudioVersion = 15.0.28307.489
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SitefinityWebApp", "SitefinityWebApp.csproj", "{3E598CFC-83B2-494A-A97F-32EB24D797C6}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SitefinityWebApp", "TorrentTracker\SitefinityWebApp.csproj", "{3E598CFC-83B2-494A-A97F-32EB24D797C6}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -23,6 +23,6 @@ Global
 		HideSolutionNode = FALSE
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
-		SolutionGuid = {7A5FFF7D-B28E-44E0-BD45-42359B042178}
+		SolutionGuid = {B85305F7-A90F-4330-ADC4-25CA580258FF}
 	EndGlobalSection
 EndGlobal
