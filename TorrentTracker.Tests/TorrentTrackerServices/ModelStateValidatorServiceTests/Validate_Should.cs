@@ -39,15 +39,7 @@ namespace TorrentTracker.Tests.TorrentTrackerServices.ModelStateValidatorService
         public void ReturnTrue_When_ModelStateIsValidAndFilesAreValid()
         {
             var modelState = new ModelStateDictionary();
-            _userImageDataStub.Setup(x => x.FileName).Returns(Constants.JpegExtension);
-            _userTorrentDataStub.Setup(x => x.FileName).Returns(Constants.TorrentExtension);
-            var torrentWidgetModel = new CreateTorrentWidgetModel()
-            {
-                UserImageData = _userImageDataStub.Object,
-                UserTorrentData = _userTorrentDataStub.Object
-            };
-            _pathFacadeStub.SetupSequence(x => x.GetExtension(It.IsAny<string>()))
-                .Returns(torrentWidgetModel.UserImageData.FileName).Returns(torrentWidgetModel.UserTorrentData.FileName);
+            var torrentWidgetModel = CreateMockTorrentWidgetModel(Constants.JpegExtension, Constants.TorrentExtension);
 
             bool actual = _modelStateValidatorService.Validate(modelState, torrentWidgetModel);
             Assert.IsTrue(actual);
@@ -57,15 +49,7 @@ namespace TorrentTracker.Tests.TorrentTrackerServices.ModelStateValidatorService
         public void ReturnFalse_When_ModelStateIsValidAndImageFileIsInvalid()
         {
             var modelState = new ModelStateDictionary();
-            _userImageDataStub.Setup(x => x.FileName).Returns(Constants.InvalidExtension);
-            _userTorrentDataStub.Setup(x => x.FileName).Returns(Constants.TorrentExtension);
-            var torrentWidgetModel = new CreateTorrentWidgetModel()
-            {
-                UserImageData = _userImageDataStub.Object,
-                UserTorrentData = _userTorrentDataStub.Object
-            };
-            _pathFacadeStub.SetupSequence(x => x.GetExtension(It.IsAny<string>()))
-                .Returns(torrentWidgetModel.UserImageData.FileName).Returns(torrentWidgetModel.UserTorrentData.FileName);
+            var torrentWidgetModel = CreateMockTorrentWidgetModel(Constants.InvalidExtension, Constants.TorrentExtension);
 
             bool actual = _modelStateValidatorService.Validate(modelState, torrentWidgetModel);
             Assert.IsFalse(actual);
@@ -75,8 +59,16 @@ namespace TorrentTracker.Tests.TorrentTrackerServices.ModelStateValidatorService
         public void ReturnFalse_When_ModelStateIsValidAndTorrentFileIsInvalid()
         {
             var modelState = new ModelStateDictionary();
-            _userImageDataStub.Setup(x => x.FileName).Returns(Constants.JpegExtension);
-            _userTorrentDataStub.Setup(x => x.FileName).Returns(Constants.InvalidExtension);
+            var torrentWidgetModel = CreateMockTorrentWidgetModel(Constants.JpegExtension, Constants.InvalidExtension);
+
+            bool actual = _modelStateValidatorService.Validate(modelState, torrentWidgetModel);
+            Assert.IsFalse(actual);
+        }
+
+        private CreateTorrentWidgetModel CreateMockTorrentWidgetModel(string imageExtension, string torrentExtension)
+        {
+            _userImageDataStub.Setup(x => x.FileName).Returns(imageExtension);
+            _userTorrentDataStub.Setup(x => x.FileName).Returns(torrentExtension);
             var torrentWidgetModel = new CreateTorrentWidgetModel()
             {
                 UserImageData = _userImageDataStub.Object,
@@ -85,8 +77,7 @@ namespace TorrentTracker.Tests.TorrentTrackerServices.ModelStateValidatorService
             _pathFacadeStub.SetupSequence(x => x.GetExtension(It.IsAny<string>()))
                 .Returns(torrentWidgetModel.UserImageData.FileName).Returns(torrentWidgetModel.UserTorrentData.FileName);
 
-            bool actual = _modelStateValidatorService.Validate(modelState, torrentWidgetModel);
-            Assert.IsFalse(actual);
+            return torrentWidgetModel;
         }
     }
 }
